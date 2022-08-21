@@ -11,20 +11,17 @@ import { UsersService } from './users.service';
 export class UsersController {
     constructor(private users: UsersService, private authService: AuthService) { }
     @Post('/signup')
-    async createUser(@Body() body: CreateUserDto) {
-        return await this.authService.sinup(body.email, body.password)
+    async createUser(@Body() body: CreateUserDto,@Session() session:any) {
+        const user= await this.authService.sinup(body.email, body.password)
+        session.userId=user.id;
+        return user
     }
-    @Get("/colors/:color")
-    setColor(@Param('color') color:string,@Session() session:any){
-        session.color=color
-    }
-    @Get("/colors")
-    getColor(@Session() session:any){
-        return session.color
-    }
+
     @Post("/signin")
-    async sigin(@Body() body: CreateUserDto) {
-        return this.authService.sinin(body.email, body.password)
+    async sigin(@Body() body: CreateUserDto,@Session() session:any) {
+        const user=await this.authService.sinin(body.email, body.password)
+        session.userId=user.id;
+        return user
     }
 
     @Get('/users/:id')
