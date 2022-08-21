@@ -39,4 +39,11 @@ export class UsersService {
         if (!user) return  new NotFoundException("user not fount");
         return await this.repo.remove(user)
     }
+    async findByEmail(email:string){
+        return await this.repo.findOne({
+            where:{
+                email
+            }
+        })
+    }
 }

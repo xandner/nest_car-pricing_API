@@ -1,5 +1,6 @@
 import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put, UseInterceptors } from '@nestjs/common';
 import { serialize } from 'src/interceptors/serialize.iterceptor';
+import { AuthService } from './auth.service';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { UserDto } from './dtos/user.dto';
@@ -8,10 +9,14 @@ import { UsersService } from './users.service';
 @Controller('auth')
 @serialize(UserDto)
 export class UsersController {
-    constructor(private users: UsersService) { }
+    constructor(private users: UsersService,private authService:AuthService) { }
     @Post('/signup')
     async createUser(@Body() body: CreateUserDto) {
-        return await this.users.create(body.email, body.password)
+        return await this.authService.sinup(body.email,body.password)
+    }
+    @Post("/signin")
+    async sigin(@Body() body:CreateUserDto){
+        return this.authService.sinin(body.email,body.password)
     }
 
     @Get('/users/:id')
