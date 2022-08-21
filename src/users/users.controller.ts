@@ -1,13 +1,18 @@
-import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put, Session, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put, Session, UseGuards, UseInterceptors } from '@nestjs/common';
+import { AuthGuard } from 'src/guards/auth.guard';
 import { serialize } from 'src/interceptors/serialize.iterceptor';
 import { AuthService } from './auth.service';
+import { CurrentUser } from './decorators/current-user.decorator';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { UserDto } from './dtos/user.dto';
+import { CurrentUserIntercepto } from './interceptors/current-user.interceptor';
+import { User } from './users.entity';
 import { UsersService } from './users.service';
 
 @Controller('auth')
 @serialize(UserDto)
+// @UseInterceptors(CurrentUserIntercepto)
 export class UsersController {
     constructor(private users: UsersService, private authService: AuthService) { }
     @Post('/signup')
@@ -23,6 +28,18 @@ export class UsersController {
         session.userId=user.id;
         return user
     }
+
+    @Get("who-im-i")
+    @UseGuards(AuthGuard)
+    async whoImI(@CurrentUser() user:User){
+        return user
+    }
+
+    @Post("/signuot")
+    signout(@Session() sessiion:any){
+        sessiion.userId=null
+    }
+
 
     @Get('/users/:id')
     async getUser(@Param('id') id: number) {
