@@ -6,7 +6,6 @@ import { CurrentUser } from './decorators/current-user.decorator';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { UserDto } from './dtos/user.dto';
-import { CurrentUserIntercepto } from './interceptors/current-user.interceptor';
 import { User } from './users.entity';
 import { UsersService } from './users.service';
 
