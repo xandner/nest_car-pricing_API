@@ -1,6 +1,5 @@
 import { BadRequestException, NotFoundException } from "@nestjs/common"
 import { Test } from "@nestjs/testing"
-import { doesNotMatch } from "assert"
 import { AuthService } from "./auth.service"
 import { User } from "./users.entity"
 import { UsersService } from "./users.service"
@@ -44,15 +43,16 @@ describe("AuthService", () => {
         // done()
         // }
     })
-    it("signed in with un unused email", async (done) => {
+    it("signed in with un unused email", async () => {
         fakeUserService.findByEmail = () => Promise.resolve({} as User)
-        await service.sinin("xander@gmail.com", "xxxxx").catch(e => {
-            done()
-        })
+        expect(service.sinin("xander@gmail.com", "xxxxx")).rejects.toThrow(NotFoundException)
     })
-    it("password provided", async () => {
-        expect(await service.sinin("fuck@fucker.fuck", "password")).toThrow("BadRequestException")
-    })
+    it('throws if an invalid password is provided', async () => {
+        try {
+          expect(service.sinin('laskdjf@alskdfj.com', 'passowrd')).rejects.toThrow(BadRequestException);
+        } catch (err) {
+        }
+      });
 })
 
 
